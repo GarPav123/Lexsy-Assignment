@@ -431,7 +431,7 @@ app.get('*', (req, res) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Legal Document Processor</title>
     <script type="module" crossorigin src="/main.js"></script>
-    <link rel="stylesheet" crossorigin href="/index-ae3h5yed.css">
+    <link rel="stylesheet" crossorigin href="/main.css">
   </head>
   <body>
     <div id="root"></div>
