@@ -13,7 +13,21 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'client/build')));
+
+// Serve static files with fallback
+const buildPath = path.join(__dirname, 'client/build');
+const clientPath = path.join(__dirname, 'client');
+
+console.log('Checking build path:', buildPath);
+console.log('Build exists:', fs.existsSync(buildPath));
+
+if (fs.existsSync(buildPath)) {
+  console.log('Serving from build directory');
+  app.use(express.static(buildPath));
+} else {
+  console.log('Build directory not found, serving from client directory');
+  app.use(express.static(clientPath));
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -399,7 +413,20 @@ app.post('/api/generate-document', async (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  const indexPath = path.join(__dirname, 'client/build', 'index.html');
+  const fallbackPath = path.join(__dirname, 'client', 'index.html');
+  
+  console.log('Looking for index.html at:', indexPath);
+  console.log('Index exists:', fs.existsSync(indexPath));
+  
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else if (fs.existsSync(fallbackPath)) {
+    console.log('Using fallback index.html');
+    res.sendFile(fallbackPath);
+  } else {
+    res.status(404).send('Frontend not found. Please check build process.');
+  }
 });
 
 app.listen(PORT, () => {
