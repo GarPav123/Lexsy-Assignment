@@ -6,7 +6,7 @@
   "scripts": {
     "start": "bun run server.js",
     "dev": "bun --watch server.js",
-    "build": "cd client && bun run build",
+    "build": "cd client && bun install && bun run build",
     "install-client": "cd client && bun install",
     "heroku-postbuild": "bun run install-client && bun run build",
     "dev-full": "concurrently \"bun run dev\" \"cd client && bun run dev\""
