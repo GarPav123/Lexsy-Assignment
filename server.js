@@ -414,18 +414,30 @@ app.post('/api/generate-document', async (req, res) => {
 
 app.get('*', (req, res) => {
   const indexPath = path.join(__dirname, 'client/build', 'index.html');
-  const fallbackPath = path.join(__dirname, 'client', 'index.html');
   
   console.log('Looking for index.html at:', indexPath);
   console.log('Index exists:', fs.existsSync(indexPath));
   
   if (fs.existsSync(indexPath)) {
+    console.log('Serving built index.html');
     res.sendFile(indexPath);
-  } else if (fs.existsSync(fallbackPath)) {
-    console.log('Using fallback index.html');
-    res.sendFile(fallbackPath);
   } else {
-    res.status(404).send('Frontend not found. Please check build process.');
+    console.log('Built index.html not found, creating fallback');
+    const fallbackHtml = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Legal Document Processor</title>
+    <script type="module" crossorigin src="/main.js"></script>
+    <link rel="stylesheet" crossorigin href="/index-ae3h5yed.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>`;
+    res.send(fallbackHtml);
   }
 });
 
